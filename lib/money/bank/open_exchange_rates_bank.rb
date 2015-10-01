@@ -74,6 +74,41 @@ class Money
         end
       end
 
+
+def exchange_rate(options = {})
+        from_curr = options[:from].to_s.upcase
+        to_curr = options[:to].to_s.upcase
+
+        from_curr = 'USD' if from_curr.empty?
+        to_curr = 'USD' if to_curr.empty?
+
+        unless exchange_rates[from_curr] && exchange_rates[to_curr]
+          raise RateNotFoundError.new(from_curr, to_curr)
+        end
+
+        if from_curr == to_curr
+          rate = 1
+        elsif from_curr == 'USD'
+          rate = exchange_rates[to_curr]
+        elsif to_curr == 'USD'
+          rate = 1 / exchange_rates[from_curr]
+        else
+          rate = exchange_rates[to_curr] * (1 / exchange_rates[from_curr])
+        end
+        round(rate, 6)
+      end
+
+      def convert(amount, options = {})
+        round(amount*exchange_rate(options))
+      end
+
+      def round(amount, decimals = 2)
+        (amount * 10**decimals).round.to_f / 10**decimals
+      end
+
+
+
+
       # Save rates on cache
       # Can raise InvalidCache
       #
