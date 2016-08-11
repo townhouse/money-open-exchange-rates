@@ -17,11 +17,14 @@ class Money
     class OpenExchangeRatesBank < Money::Bank::VariableExchange
       VERSION = ::OpenExchangeRatesBank::VERSION
       # OpenExchangeRates urls
-      OER_URL = 'http://openexchangerates.org/latest.json'
-      OER_HISTORICAL_URL = 'http://openexchangerates.org/historical/%s.json'
+      OER_URL = 'https://openexchangerates.org/latest.json'
+      OER_HISTORICAL_URL = 'https://openexchangerates.org/historical/%s.json'
+      
+      SECURE_OER_URL = 'https://openexchangerates.org/latest.json'
+      SECURE_OER_HISTORICAL_URL = 'https://openexchangerates.org/historical/%s.json'
       # OpenExchangeRates secure url
-      SECURE_OER_URL = OER_URL.gsub('http:', 'https:')
-      SECURE_OER_HISTORICAL_URL = OER_URL.gsub('http:', 'https:')
+      #SECURE_OER_URL = OER_URL.gsub('http:', 'https:')
+      #SECURE_OER_HISTORICAL_URL = OER_URL.gsub('http:', 'https:')
 
       # use https to fetch rates from Open Exchange Rates
       # disabled by default to support free-tier users
@@ -204,7 +207,7 @@ def exchange_rate(options = {})
       # @return [String] JSON content
       def read_from_url
         fail NoAppId if app_id.nil? || app_id.empty?
-        open(source_url).read
+        open(source_url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
       end
 
       # Check validity of rates response only for store in cache
