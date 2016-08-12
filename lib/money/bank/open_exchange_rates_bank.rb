@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'open_uri_redirections'
 require 'money'
 require 'json'
 require File.expand_path('../../../open_exchange_rates_bank/version', __FILE__)
@@ -208,7 +209,8 @@ def exchange_rate(options = {})
       def read_from_url
         fail NoAppId if app_id.nil? || app_id.empty?
         #open(source_url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}).read
-        open(source_url).read
+        #open(source_url).read
+        open(source_url, allow_redirections: :all).read
       end
 
       # Check validity of rates response only for store in cache
